@@ -95,14 +95,16 @@ JS;
         $firstLocale = array_key_first($translations);
         $keys = array_keys($translations[$firstLocale] ?? []);
         $keyType = empty($keys) ? 'string' : "'" . implode("' | '", $keys) . "'";
+        $localeType = "'" . implode("' | '", array_keys($translations)) . "'";
+        $dateTime = $this->getCurrentDateTime();
         
         return <<<TS
 // Auto-generated translated routes
-// Generated at: {$this->getCurrentDateTime()}
+// Generated at: {$dateTime}
 
 export type RouteKey = {$keyType};
 
-export type Locale = '" . implode("' | '", array_keys($translations)) . "';
+export type Locale = {$localeType};
 
 export interface TranslatedRoutes {
   [locale: string]: {

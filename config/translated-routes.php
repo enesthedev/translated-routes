@@ -31,8 +31,8 @@ return [
     |
     */
 
-    'cache_enabled' => env('TRANSLATED_ROUTES_CACHE', true),
+    'cache_enabled' => true,
 
-    'cache_ttl' => env('TRANSLATED_ROUTES_CACHE_TTL', 86400),
+    'cache_ttl' => 86400,
 
 ];

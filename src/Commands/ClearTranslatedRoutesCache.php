@@ -15,7 +15,7 @@ class ClearTranslatedRoutesCache extends Command
     {
         $locale = $this->argument('locale');
 
-        if ($locale && ! TranslatedRoutes::isSupportedLocale($locale)) {
+        if ($locale && ! array_key_exists($locale, TranslatedRoutes::getSupportedLocales())) {
             $this->error("Locale '{$locale}' is not supported.");
 
             return self::FAILURE;

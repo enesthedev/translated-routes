@@ -21,16 +21,16 @@ class ValidateTranslatedRoutes extends Command
         $locales = array_keys(TranslatedRoutes::getSupportedLocales());
         $translations = $this->loadAllTranslations($locales);
         
-        $hasErrors = false;
-
         // Check for missing translations
-        $hasErrors = $this->checkMissingTranslations($translations, $locales) || $hasErrors;
+        $missingErrors = $this->checkMissingTranslations($translations, $locales);
 
         // Check for unused translations
-        $hasErrors = $this->checkUnusedTranslations($translations) || $hasErrors;
+        $unusedErrors = $this->checkUnusedTranslations($translations);
 
         // Check for inconsistent keys
-        $hasErrors = $this->checkInconsistentKeys($translations, $locales) || $hasErrors;
+        $inconsistentErrors = $this->checkInconsistentKeys($translations, $locales);
+
+        $hasErrors = $missingErrors || $unusedErrors || $inconsistentErrors;
 
         $this->newLine();
 
@@ -100,11 +100,11 @@ class ValidateTranslatedRoutes extends Command
     protected function checkUnusedTranslations(array $translations): bool
     {
         $hasErrors = false;
-        $routes = Route::getRoutes();
+        $routeCollection = Route::getRoutes();
         $usedKeys = [];
 
         // Collect all route URIs that use translate()
-        foreach ($routes as $route) {
+        foreach ($routeCollection->getRoutes() as $route) {
             $uri = $route->uri();
             if ($uri !== '/') {
                 $usedKeys[] = $uri;

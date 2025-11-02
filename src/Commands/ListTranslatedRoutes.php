@@ -17,10 +17,10 @@ class ListTranslatedRoutes extends Command
         $locale = $this->option('locale');
         $locales = $locale ? [$locale] : array_keys(TranslatedRoutes::getSupportedLocales());
 
-        $routes = Route::getRoutes();
+        $routeCollection = Route::getRoutes();
         $translatedRoutes = [];
 
-        foreach ($routes as $route) {
+        foreach ($routeCollection->getRoutes() as $route) {
             $uri = $route->uri();
             $name = $route->getName();
             $methods = implode('|', $route->methods());
