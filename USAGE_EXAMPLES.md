@@ -91,13 +91,21 @@ Route::get('blog', [BlogController::class, 'show'])
 ### 3. Group Translation
 
 ```php
-// Translate all routes in a group at once
-Route::group([], function () {
+// Option 1: translateGroup helper (Recommended)
+Route::translateGroup([], function () {
     Route::get('about', [PageController::class, 'about'])->name('about');
     Route::get('contact', [PageController::class, 'contact'])->name('contact');
     Route::get('services', [PageController::class, 'services'])->name('services');
     Route::get('blog', [BlogController::class, 'show'])->name('blog.show');
-})->translate();
+});
+
+// Option 2: Individual translate calls
+Route::group([], function () {
+    Route::get('about', [PageController::class, 'about'])->name('about')->translate();
+    Route::get('contact', [PageController::class, 'contact'])->name('contact')->translate();
+    Route::get('services', [PageController::class, 'services'])->name('services')->translate();
+    Route::get('blog', [BlogController::class, 'show'])->name('blog.show')->translate();
+});
 ```
 
 ## Locale Management
@@ -151,10 +159,16 @@ class SetLocale
 **routes/web.php**
 ```php
 Route::middleware(['web', 'setLocale'])->group(function () {
-    Route::group([], function () {
+    Route::translateGroup([], function () {
         Route::get('about', [PageController::class, 'about'])->name('about');
         Route::get('contact', [PageController::class, 'contact'])->name('contact');
-    })->translate();
+    });
+});
+
+// Or using translateGroup with middleware directly
+Route::translateGroup(['middleware' => ['web', 'setLocale']], function () {
+    Route::get('about', [PageController::class, 'about'])->name('about');
+    Route::get('contact', [PageController::class, 'contact'])->name('contact');
 });
 ```
 
@@ -201,13 +215,22 @@ public function handle(Request $request, Closure $next)
 ```php
 use Illuminate\Support\Facades\Route;
 
+// Recommended: Use translateGroup with middleware
+Route::translateGroup(['middleware' => ['web', 'share-inertia-locale']], function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home');
+    Route::get('about', [PageController::class, 'about'])->name('about');
+    Route::get('contact', [PageController::class, 'contact'])->name('contact');
+    Route::get('blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
+});
+
+// Alternative: Nested groups
 Route::middleware(['web', 'share-inertia-locale'])->group(function () {
-    Route::group([], function () {
+    Route::translateGroup([], function () {
         Route::get('/', [HomeController::class, 'index'])->name('home');
         Route::get('about', [PageController::class, 'about'])->name('about');
         Route::get('contact', [PageController::class, 'contact'])->name('contact');
         Route::get('blog/{slug}', [BlogController::class, 'show'])->name('blog.show');
-    })->translate();
+    });
 });
 ```
 
@@ -345,7 +368,7 @@ Route::middleware(['web', 'share-inertia-locale'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     
     // Translated public routes
-    Route::group([], function () {
+    Route::translateGroup([], function () {
         Route::get('about', [HomeController::class, 'about'])->name('about');
         Route::get('contact', [HomeController::class, 'contact'])->name('contact');
         
@@ -356,19 +379,17 @@ Route::middleware(['web', 'share-inertia-locale'])->group(function () {
         Route::get('products/{id}', [ProductController::class, 'show'])->name('products.show');
         
         Route::get('cart', [CartController::class, 'index'])->name('cart.index');
-    })->translate();
+    });
     
     // Translated form submissions
     Route::post('contact', [HomeController::class, 'contactSubmit'])->name('contact.submit')->translate();
     Route::post('cart', [CartController::class, 'add'])->name('cart.add')->translate();
     
     // Authenticated routes
-    Route::middleware(['auth'])->group(function () {
-        Route::group([], function () {
-            Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-            Route::get('account', [AccountController::class, 'index'])->name('account.index');
-            Route::get('account/orders', [AccountController::class, 'orders'])->name('account.orders');
-        })->translate();
+    Route::translateGroup(['middleware' => 'auth'], function () {
+        Route::get('checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+        Route::get('account', [AccountController::class, 'index'])->name('account.index');
+        Route::get('account/orders', [AccountController::class, 'orders'])->name('account.orders');
         
         Route::post('checkout', [CheckoutController::class, 'process'])->name('checkout.process')->translate();
     });

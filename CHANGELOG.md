@@ -2,6 +2,51 @@
 
 All notable changes to `translated-routes` will be documented in this file.
 
+## 3.2.0 - 2025-11-02
+
+### Fixed
+
+- **RouteRegistrar Compatibility**: Removed `RouteRegistrar::macro()` usage (not supported in Laravel)
+  - `Route::middleware()->translate()->group()` is no longer supported
+  - Use `Route::translateGroup(['middleware' => 'auth'], function() {...})` instead
+  - Updated all documentation with correct usage examples
+- **Dependency Constraints**: Updated version constraints for Laravel 11/12 compatibility
+  - Added support for Pest 3.x/4.x
+  - Added support for Collision 8.x/9.x
+  - Fixed `prefer-lowest` strategy in CI/CD
+- **PHPStan Configuration**: Removed unused `database` path from analysis
+  - Cleaned up empty database directories
+  - Removed database factories from composer autoload
+
+### Changed
+
+- **Documentation**: Comprehensive update of all `.md` files
+  - Updated `README.md` with correct `translateGroup()` usage
+  - Updated `USAGE_EXAMPLES.md` with best practices
+  - Updated `FEATURES.md` with clarified group translation examples
+  - Added clear distinction between two translation methods
+
+### Migration Guide
+
+If you're using:
+```php
+// ❌ This no longer works
+Route::middleware('auth')->translate()->group(function () {...});
+```
+
+Change to:
+```php
+// ✅ Option 1: Use translateGroup (Recommended)
+Route::translateGroup(['middleware' => 'auth'], function () {
+    Route::get('settings/profile', $action);
+});
+
+// ✅ Option 2: Individual translate calls
+Route::middleware('auth')->group(function () {
+    Route::get('settings/profile', $action)->translate();
+});
+```
+
 ## 3.1.0 - 2025-11-02
 
 ### Major Feature Release 🎉

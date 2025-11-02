@@ -16,17 +16,23 @@ This package does **one thing** and does it **well**: translates route URIs base
 
 ### 1. `->translate()` Macro
 
-Add `.translate()` to any route or route group:
+Add `.translate()` to any route or use `translateGroup()` for groups:
 
 ```php
 // Single route
 Route::get('about', $action)->translate();
 
-// Entire group
-Route::group([], function () {
-    Route::get('about', $action);
-    Route::get('contact', $action);
-})->translate();
+// Entire group - Option 1 (Recommended)
+Route::translateGroup(['middleware' => 'auth'], function () {
+    Route::get('settings/profile', $action);
+    Route::get('settings/password', $action);
+});
+
+// Entire group - Option 2
+Route::middleware('auth')->group(function () {
+    Route::get('settings/profile', $action)->translate();
+    Route::get('settings/password', $action)->translate();
+});
 ```
 
 ### 2. Automatic Parameter Preservation

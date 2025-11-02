@@ -80,16 +80,33 @@ return [
 use Illuminate\Support\Facades\Route;
 
 // Single route translation
-Route::get('about', [PageController::class, 'about'])->translate();
-Route::get('contact', [PageController::class, 'contact'])->translate();
-Route::get('blog', [BlogController::class, 'show'])->translate();
+Route::get('about', [PageController::class, 'about'])
+    ->name('about')
+    ->translate();
 
-// Group translation (translates all routes in group)
-Route::group([], function () {
-    Route::get('about', [PageController::class, 'about']);
-    Route::get('contact', [PageController::class, 'contact']);
-    Route::get('products', [ProductController::class, 'show']);
-})->translate();
+Route::get('contact', [PageController::class, 'contact'])
+    ->name('contact')
+    ->translate();
+
+Route::get('blog/{slug}', [BlogController::class, 'show'])
+    ->name('blog.show')
+    ->translate();
+
+// Group translation - Option 1: translateGroup helper
+Route::translateGroup(['middleware' => 'auth'], function () {
+    Route::get('settings/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('settings/password', [PasswordController::class, 'edit'])->name('password.edit');
+});
+
+// Group translation - Option 2: Individual translate calls
+Route::middleware('auth')->group(function () {
+    Route::get('settings/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit')
+        ->translate();
+    Route::get('settings/password', [PasswordController::class, 'edit'])
+        ->name('password.edit')
+        ->translate();
+});
 ```
 
 ### 3. Set Your App Locale
@@ -198,10 +215,17 @@ console.log(locale.supported.tr.native);  // 'Türkçe'
 // Translate a single route
 Route::get('about', $action)->translate();
 
-// Translate all routes in a group
-Route::group([], function () {
-    // Your routes
-})->translate();
+// Translate all routes in a group - Option 1 (Recommended)
+Route::translateGroup(['middleware' => 'auth'], function () {
+    Route::get('settings/profile', [ProfileController::class, 'edit']);
+    Route::get('settings/password', [PasswordController::class, 'edit']);
+});
+
+// Translate all routes in a group - Option 2
+Route::middleware('auth')->group(function () {
+    Route::get('settings/profile', [ProfileController::class, 'edit'])->translate();
+    Route::get('settings/password', [PasswordController::class, 'edit'])->translate();
+});
 ```
 
 ### Facade
