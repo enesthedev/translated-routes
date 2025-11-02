@@ -2,8 +2,8 @@
 
 namespace Enes\TranslatedRoutes\Commands;
 
-use Illuminate\Console\Command;
 use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
+use Illuminate\Console\Command;
 
 class ClearTranslatedRoutesCache extends Command
 {

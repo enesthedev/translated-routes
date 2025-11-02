@@ -2,10 +2,10 @@
 
 namespace Enes\TranslatedRoutes\Commands;
 
+use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
-use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 
 class ValidateTranslatedRoutes extends Command
 {
@@ -20,7 +20,7 @@ class ValidateTranslatedRoutes extends Command
 
         $locales = array_keys(TranslatedRoutes::getSupportedLocales());
         $translations = $this->loadAllTranslations($locales);
-        
+
         $hasErrors = false;
 
         // Check for missing translations
@@ -36,10 +36,12 @@ class ValidateTranslatedRoutes extends Command
 
         if ($hasErrors) {
             $this->error('✗ Validation failed with errors');
+
             return self::FAILURE;
         }
 
         $this->info('✓ All translations are valid!');
+
         return self::SUCCESS;
     }
 
@@ -52,6 +54,7 @@ class ValidateTranslatedRoutes extends Command
         $singleFilePath = "{$langPath}/routes.php";
         if (file_exists($singleFilePath)) {
             $translations = require $singleFilePath;
+
             return $translations;
         }
 
@@ -84,7 +87,7 @@ class ValidateTranslatedRoutes extends Command
             $localeKeys = array_keys($translations[$locale] ?? []);
             $missingKeys = array_diff($allKeys, $localeKeys);
 
-            if (!empty($missingKeys)) {
+            if (! empty($missingKeys)) {
                 $hasErrors = true;
                 $this->warn("Missing translations in locale '{$locale}':");
                 foreach ($missingKeys as $key) {
@@ -139,7 +142,7 @@ class ValidateTranslatedRoutes extends Command
 
         // Check for inconsistencies
         $firstLocale = $locales[0] ?? null;
-        if (!$firstLocale) {
+        if (! $firstLocale) {
             return false;
         }
 
@@ -158,7 +161,7 @@ class ValidateTranslatedRoutes extends Command
                 $extra = array_diff($currentKeys, $baseKeys);
                 $missing = array_diff($baseKeys, $currentKeys);
 
-                if (!empty($extra)) {
+                if (! empty($extra)) {
                     $hasErrors = true;
                     $this->warn("Extra keys in '{$locale}' (not in '{$firstLocale}'):");
                     foreach ($extra as $key) {
@@ -167,7 +170,7 @@ class ValidateTranslatedRoutes extends Command
                     $this->newLine();
                 }
 
-                if (!empty($missing)) {
+                if (! empty($missing)) {
                     $hasErrors = true;
                     $this->warn("Missing keys in '{$locale}' (present in '{$firstLocale}'):");
                     foreach ($missing as $key) {
@@ -183,9 +186,8 @@ class ValidateTranslatedRoutes extends Command
 
     protected function getLangPath(): string
     {
-        return is_dir(base_path('lang')) 
-            ? base_path('lang') 
+        return is_dir(base_path('lang'))
+            ? base_path('lang')
             : resource_path('lang');
     }
 }
-

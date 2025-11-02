@@ -2,9 +2,9 @@
 
 namespace Enes\TranslatedRoutes\Commands;
 
+use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Route;
-use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 
 class ListTranslatedRoutes extends Command
 {
@@ -31,7 +31,7 @@ class ListTranslatedRoutes extends Command
 
             foreach ($locales as $loc) {
                 $translatedUri = TranslatedRoutes::translate($uri, $loc);
-                
+
                 $translatedRoutes[] = [
                     'method' => $methods,
                     'uri' => $translatedUri,
@@ -43,6 +43,7 @@ class ListTranslatedRoutes extends Command
 
         if (empty($translatedRoutes)) {
             $this->info('No translated routes found.');
+
             return self::SUCCESS;
         }
 
@@ -51,12 +52,13 @@ class ListTranslatedRoutes extends Command
             if ($a['locale'] === $b['locale']) {
                 return strcmp($a['uri'], $b['uri']);
             }
+
             return strcmp($a['locale'], $b['locale']);
         });
 
         $this->table(
             ['Method', 'URI', 'Name', 'Locale'],
-            array_map(fn($route) => [
+            array_map(fn ($route) => [
                 $route['method'],
                 $route['uri'],
                 $route['name'],
@@ -67,4 +69,3 @@ class ListTranslatedRoutes extends Command
         return self::SUCCESS;
     }
 }
-

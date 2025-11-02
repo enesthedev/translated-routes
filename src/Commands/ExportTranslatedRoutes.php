@@ -2,9 +2,9 @@
 
 namespace Enes\TranslatedRoutes\Commands;
 
+use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 
 class ExportTranslatedRoutes extends Command
 {
@@ -22,7 +22,7 @@ class ExportTranslatedRoutes extends Command
         $locales = array_keys(TranslatedRoutes::getSupportedLocales());
         $translations = $this->loadAllTranslations($locales);
 
-        $content = match($format) {
+        $content = match ($format) {
             'json' => $this->exportToJson($translations),
             'js' => $this->exportToJavaScript($translations),
             'ts' => $this->exportToTypeScript($translations),
@@ -31,7 +31,7 @@ class ExportTranslatedRoutes extends Command
 
         // Ensure directory exists
         $directory = dirname($output);
-        if (!File::exists($directory)) {
+        if (! File::exists($directory)) {
             File::makeDirectory($directory, 0755, true);
         }
 
@@ -72,7 +72,7 @@ class ExportTranslatedRoutes extends Command
     protected function exportToJavaScript(array $translations): string
     {
         $json = json_encode($translations, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        
+
         return <<<JS
 // Auto-generated translated routes
 // Generated at: {$this->getCurrentDateTime()}
@@ -90,12 +90,12 @@ JS;
     protected function exportToTypeScript(array $translations): string
     {
         $json = json_encode($translations, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-        
+
         // Get first locale to extract keys for type
         $firstLocale = array_key_first($translations);
         $keys = array_keys($translations[$firstLocale] ?? []);
-        $keyType = empty($keys) ? 'string' : "'" . implode("' | '", $keys) . "'";
-        
+        $keyType = empty($keys) ? 'string' : "'".implode("' | '", $keys)."'";
+
         return <<<TS
 // Auto-generated translated routes
 // Generated at: {$this->getCurrentDateTime()}
@@ -122,7 +122,7 @@ TS;
 
     protected function getDefaultOutput(string $format): string
     {
-        $extension = match($format) {
+        $extension = match ($format) {
             'json' => 'json',
             'js' => 'js',
             'ts' => 'ts',
@@ -134,8 +134,8 @@ TS;
 
     protected function getLangPath(): string
     {
-        return is_dir(base_path('lang')) 
-            ? base_path('lang') 
+        return is_dir(base_path('lang'))
+            ? base_path('lang')
             : resource_path('lang');
     }
 
@@ -144,4 +144,3 @@ TS;
         return now()->toDateTimeString();
     }
 }
-

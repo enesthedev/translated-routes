@@ -2,9 +2,9 @@
 
 namespace Enes\TranslatedRoutes\Tests;
 
+use Enes\TranslatedRoutes\TranslatedRoutesServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Enes\TranslatedRoutes\TranslatedRoutesServiceProvider;
 
 class TestCase extends Orchestra
 {

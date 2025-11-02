@@ -2,9 +2,9 @@
 
 namespace Enes\TranslatedRoutes\Commands;
 
+use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\App;
-use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 
 class ProfileTranslatedRoutes extends Command
 {
@@ -24,10 +24,10 @@ class ProfileTranslatedRoutes extends Command
 
         // Test cold start
         $coldStartTime = $this->benchmarkColdStart();
-        
+
         // Test warm cache
         $warmCacheTime = $this->benchmarkWarmCache($iterations);
-        
+
         // Test memory usage
         $memoryUsage = $this->measureMemoryUsage();
 
@@ -41,16 +41,16 @@ class ProfileTranslatedRoutes extends Command
     {
         // Clear all caches
         TranslatedRoutes::clearCache();
-        
+
         $start = microtime(true);
-        
+
         // Load first translation
         $locale = array_key_first(TranslatedRoutes::getSupportedLocales());
         App::setLocale($locale);
         TranslatedRoutes::translate('about');
-        
+
         $end = microtime(true);
-        
+
         return ($end - $start) * 1000; // Convert to milliseconds
     }
 
@@ -58,37 +58,38 @@ class ProfileTranslatedRoutes extends Command
     {
         $locale = array_key_first(TranslatedRoutes::getSupportedLocales());
         App::setLocale($locale);
-        
+
         // Warm up
         TranslatedRoutes::translate('about');
-        
+
         // Benchmark
         $start = microtime(true);
-        
+
         for ($i = 0; $i < $iterations; $i++) {
             TranslatedRoutes::translate('about');
             TranslatedRoutes::translate('contact');
             TranslatedRoutes::translate('blog/{slug}');
         }
-        
+
         $end = microtime(true);
-        
+
         $totalTime = ($end - $start) * 1000; // Convert to milliseconds
+
         return $totalTime / ($iterations * 3); // Average per translation
     }
 
     protected function measureMemoryUsage(): array
     {
         $before = memory_get_usage(true);
-        
+
         // Load all locales
         foreach (array_keys(TranslatedRoutes::getSupportedLocales()) as $locale) {
             App::setLocale($locale);
             TranslatedRoutes::translate('about');
         }
-        
+
         $after = memory_get_usage(true);
-        
+
         return [
             'before' => $before,
             'after' => $after,
@@ -105,9 +106,9 @@ class ProfileTranslatedRoutes extends Command
         $this->table(
             ['Metric', 'Value'],
             [
-                ['Cold Start (first load)', number_format($coldStart, 2) . ' ms'],
-                ['Warm Cache (avg)', number_format($warmCache, 4) . ' ms'],
-                ['Cache Speedup', number_format($coldStart / $warmCache, 0) . 'x faster'],
+                ['Cold Start (first load)', number_format($coldStart, 2).' ms'],
+                ['Warm Cache (avg)', number_format($warmCache, 4).' ms'],
+                ['Cache Speedup', number_format($coldStart / $warmCache, 0).'x faster'],
             ]
         );
 
@@ -154,13 +155,12 @@ class ProfileTranslatedRoutes extends Command
     {
         $units = ['B', 'KB', 'MB', 'GB'];
         $i = 0;
-        
+
         while ($bytes >= 1024 && $i < count($units) - 1) {
             $bytes /= 1024;
             $i++;
         }
-        
-        return number_format($bytes, 2) . ' ' . $units[$i];
+
+        return number_format($bytes, 2).' '.$units[$i];
     }
 }
-
