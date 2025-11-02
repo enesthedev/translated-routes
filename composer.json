@@ -42,8 +42,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Enes\\TranslatedRoutes\\": "src/",
-            "Enes\\TranslatedRoutes\\Database\\Factories\\": "database/factories/"
+            "Enes\\TranslatedRoutes\\": "src/"
         },
         "files": [
             "src/helpers.php"
