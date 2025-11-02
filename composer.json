@@ -1,17 +1,24 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "enesthedev/translated-routes",
+    "version": "3.1.0",
+    "description": "Simple route translation for Laravel 11+. Just add ->translate() to your routes. Wildcard support, validation, export to JSON/JS/TS. Works with any locale management system.",
     "keywords": [
-        ":vendor_name",
         "laravel",
-        ":package_slug"
+        "laravel-11",
+        "translated-routes",
+        "multilingual",
+        "localization",
+        "i18n",
+        "routes",
+        "seo",
+        "locale"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/enesthedev/translated-routes",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Enes Bayraktar",
+            "email": "enes.bayraktar@outlook.com.tr",
             "role": "Developer"
         }
     ],
@@ -35,13 +42,16 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
-        }
+            "Enes\\TranslatedRoutes\\": "src/",
+            "Enes\\TranslatedRoutes\\Database\\Factories\\": "database/factories/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "Enes\\TranslatedRoutes\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +73,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "Enes\\TranslatedRoutes\\TranslatedRoutesServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "TranslatedRoutes": "Enes\\TranslatedRoutes\\Facades\\TranslatedRoutes"
             }
         }
     },
