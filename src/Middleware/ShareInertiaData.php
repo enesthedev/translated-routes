@@ -3,9 +3,9 @@
 namespace Enes\TranslatedRoutes\Middleware;
 
 use Closure;
+use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Enes\TranslatedRoutes\Facades\TranslatedRoutes;
 
 class ShareInertiaData
 {
