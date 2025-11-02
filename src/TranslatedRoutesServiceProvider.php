@@ -71,37 +71,42 @@ class TranslatedRoutesServiceProvider extends ServiceProvider
         // This creates a wrapper that will translate routes when group() is called
         RouteRegistrar::macro('translate', function () {
             $registrar = $this;
-            
+
             // Return a proxy that intercepts the group() call
-            return new class($registrar) {
+            return new class($registrar)
+            {
                 private $registrar;
+
                 private $router;
-                
-                public function __construct($registrar) {
+
+                public function __construct($registrar)
+                {
                     $this->registrar = $registrar;
                     $this->router = app('router');
                 }
-                
-                public function group(\Closure $callback) {
+
+                public function group(\Closure $callback)
+                {
                     // Get route count before group registration
                     $beforeCount = count($this->router->getRoutes()->getRoutes());
-                    
+
                     // Call the actual group method
                     $this->registrar->group($callback);
-                    
+
                     // Translate all newly added routes
                     $allRoutes = $this->router->getRoutes()->getRoutes();
                     $newRoutes = array_slice($allRoutes, $beforeCount);
-                    
+
                     foreach ($newRoutes as $route) {
                         $originalUri = $route->uri();
                         $translatedUri = app(\Enes\TranslatedRoutes\TranslatedRoutes::class)->translate($originalUri);
                         $route->setUri($translatedUri);
                     }
                 }
-                
+
                 // Forward any other method calls to the registrar
-                public function __call($method, $parameters) {
+                public function __call($method, $parameters)
+                {
                     return $this->registrar->$method(...$parameters);
                 }
             };

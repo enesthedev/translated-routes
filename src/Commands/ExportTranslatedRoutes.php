@@ -97,6 +97,7 @@ JS;
         $keyType = empty($keys) ? 'string' : "'".implode("' | '", $keys)."'";
         $localeType = "'".implode("' | '", array_keys($translations))."'";
         $dateTime = $this->getCurrentDateTime();
+
         return <<<TS
 // Auto-generated translated routes
 // Generated at: {$dateTime}
